@@ -27,38 +27,41 @@
 
 using namespace  std;
 
-
-typedef struct
-{
-    int x;
-    int y;
-}   Point;
-
+//单元格的数据格式，x坐标和y坐标
 struct GridLocation {
   int x, y;
 };
 
+//贪食蛇的移动方向，上下左右，如果计算不出移动方向，返回错误码
 typedef  enum
 {
     RIGHT = 0X01,
     LEFT  = 0X02,
     UP    = 0X03,
     DOWN  = 0X04,
-    ERROR = 0xFF
+    ERROR = 0xFF,
 } DIRECTION;
 
 
+//贪食蛇的游戏难度
+typedef enum
+{
+	EASY = 500,
+	MEDIUM = 250,
+	DIFFICULT = 100,
+	VERY_DIFFICULT = 50,
+} GAMELEVEL;
 
-#define EASY 500
-#define MEDIUM 250
-#define DIFFICULT 100
-#define VERY_DIFFICULT 15
 
-#define STANDARD_WIDTH 600
-#define STANDARD_HEIGHT 600
-#define STANDARD_MARGIN 30
-#define SNAKE_WIDTH 30
 
+
+//行列方格的个数，贪食蛇的宽度，边界的宽度，场景的宽和高
+#define GRID_NUM       10
+#define SNAKE_WIDTH    40
+#define STANDARD_MARGIN SNAKE_WIDTH
+
+#define STANDARD_WIDTH (GRID_NUM * SNAKE_WIDTH + 3 * STANDARD_MARGIN)
+#define STANDARD_HEIGHT STANDARD_WIDTH
 
 
 #endif // PUBLIC_H

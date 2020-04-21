@@ -58,20 +58,6 @@ GridWithWeights make_diagram4() {
 }
 
 
-
-int isGridLocationValid(GridLocation location, int width, int height)
-{
-    if(location.x < width && location.x >= 0 && location.y < height && location.y >= 0)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-
 // Helpers for GridLocation
 
 bool operator == (GridLocation a, GridLocation b) {

@@ -3,6 +3,11 @@
 
 #include "public.h"
 
+//这个implementation是从国外大师那里拿来稍作修改，放到项目中来使用的。
+//URL：https://www.redblobgames.com/pathfinding/a-star/implementation.html#cpp-breadth-first
+//感谢来自硅谷的游戏大师提供源码和讲解支持，我认真研读后，对路径搜索算法有了更加深刻的理解，
+//有一种打通任督二脉，全身舒畅，醍醐灌顶的感觉。
+
 // Helpers for GridLocation
 
 bool operator == (GridLocation a, GridLocation b);
@@ -108,10 +113,6 @@ GridWithWeights make_diagram4();
 inline double heuristic(GridLocation a, GridLocation b) {
   return std::abs(a.x - b.x) + std::abs(a.y - b.y);
 }
-
-
-
-int isGridLocationValid(GridLocation location, int width, int height);
 
 // This outputs a grid. Pass in a distances map if you want to print
 // the distances, or pass in a point_to map if you want to print
