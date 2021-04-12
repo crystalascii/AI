@@ -1,31 +1,9 @@
-#include "runsnake.h"
-
-int checkDirection(GridLocation current, GridLocation next);
-GridLocation chooseShortestWay(SquareGrid grid, GridLocation snakeHead,
-                        std::unordered_map<GridLocation, double> cost_so_far);
-GridLocation chooseLongestWay(SquareGrid grid, GridLocation snakeHead,
-                       std::unordered_map<GridLocation, double> cost_so_far);
-
-//初始化随机数种子
-void initRandSeed(void)
-{
-    srand(static_cast<unsigned int>(time(nullptr)));
-    rand();
-    rand();
-}
-
-//生成随机数
-int randomize(int max)
-{
-    int number = rand() % max;
-
-    return number;
-}
-
+﻿#include "runsnake.h"
+#include "util.h"
 
 RunSnake::RunSnake()
 {
-    initRandSeed();
+    Util::initRandSeed();
 
     initSnakeAndFood();
     level = VERY_DIFFICULT;
@@ -40,7 +18,7 @@ int RunSnake::getLevel()
 
 void RunSnake::initSnakeAndFood()        //初始化蛇和食物
 {
-    x_max = (STANDARD_WIDTH - 2*STANDARD_MARGIN)/SNAKE_WIDTH-2;
+    x_max = (STANDARD_WIDTH - 2*STANDARD_MARGIN)/SNAKE_WIDTH;
     y_max = x_max;
 
     int initPointArr[3][2] = {{x_max-1, y_max/2}, {x_max-2, y_max/2}, {x_max-3, y_max/2}};
@@ -52,8 +30,6 @@ void RunSnake::initSnakeAndFood()        //初始化蛇和食物
         p1.y = initPointArr[i][1];
         deq.push_back(p1);
     }
-
-
 
     feedFood();
 }
@@ -152,10 +128,10 @@ void RunSnake::moveSnake()          //移动蛇
     }
 }
 
-
+///this function is O(n^2), change it to decrease algorithm time.
 int RunSnake::detectCollision()     //检测是否发生碰撞
 {
-    int horiMargin = (STANDARD_WIDTH-2*STANDARD_MARGIN) / SNAKE_WIDTH - 1;
+    int horiMargin = (STANDARD_WIDTH-2*STANDARD_MARGIN) / SNAKE_WIDTH;
     int vertiMargin = horiMargin;
 
     for(deque<GridLocation>::iterator it=deq.begin();it!=deq.end();++it)
@@ -190,8 +166,8 @@ void RunSnake::feedFood()                //喂食物
     do
     {
         isFoodValid = true;
-        food.x = randomize(x_max+1);
-        food.y = randomize(y_max+1);
+        food.x = Util::randomize(x_max);
+        food.y = Util::randomize(y_max);
 
         //查找食物是否在贪食蛇身体内
         for (deque<GridLocation>::iterator it=deq.begin();it!=deq.end();it++)
@@ -214,17 +190,6 @@ void RunSnake::setDirection(int dir)
     direction = dir;
 }
 
-int isTimeArrived(struct timeval lasttime, struct timeval currenttime, int settime)
-{
-    if(currenttime.tv_sec*1000+currenttime.tv_usec/1000
-            - (lasttime.tv_sec*1000+lasttime.tv_usec/1000) > settime)
-    {
-        return true;
-    }
-    else {
-        return false;
-    }
-}
 
 void RunSnake::run()
 {
@@ -238,7 +203,7 @@ void RunSnake::run()
         usleep(static_cast<unsigned long>(1000*level/2));
         gettimeofday(&currenttime, nullptr);
 
-        if(isTimeArrived(lasttime, currenttime, level))
+        if(Util::isTimeArrived(lasttime, currenttime, level))
         {
             lasttime = currenttime;
 
@@ -264,7 +229,7 @@ void RunSnake::run()
 
 SquareGrid RunSnake::makeDiagram(deque<GridLocation> deq)
 {
-  SquareGrid grid(x_max+1, y_max+1);
+  SquareGrid grid(x_max, y_max);
   for (deque<GridLocation>::iterator it=deq.begin();it!=deq.end();++it)
   {
       grid.walls.insert(GridLocation{it->x, it->y});
@@ -275,7 +240,7 @@ SquareGrid RunSnake::makeDiagram(deque<GridLocation> deq)
 
 SquareGrid RunSnake::makeDiagram1(deque<GridLocation> deq)
 {
-  SquareGrid grid(x_max+1, y_max+1);
+  SquareGrid grid(x_max, y_max);
   for (deque<GridLocation>::iterator it=deq.begin();it!=deq.end();++it)
   {
       grid.walls.insert(GridLocation{it->x, it->y});
@@ -289,7 +254,6 @@ SquareGrid RunSnake::makeDiagram1(deque<GridLocation> deq)
 
 void calculateSnakeBody(deque<GridLocation> &deq1, std::deque<GridLocation> deq, std::vector<GridLocation> snakePath)
 {
-    //测试当贪食蛇到达食物位置时，贪食蛇的头部能不能到达贪食蛇的尾部
     std::reverse(snakePath.begin(), snakePath.end());
 
     int pathsz = static_cast<int>(snakePath.size());
@@ -350,7 +314,7 @@ int RunSnake::checkSnakePathValid()
     //查看蛇头是否到达食物后，是否蛇头能够到达蛇尾
     if(ret)
     {
-        GridLocation nextMove = chooseShortestWay(grid, start, cost_so_far);
+        GridLocation nextMove = Util::chooseShortestWay(grid, start, cost_so_far);
         printf("current: (%d %d) next: (%d %d) dir: %d\n", start.x, start.y, nextMove.x, nextMove.y, direction);
 
         if(nextMove.x == -1 && nextMove.y == -1)
@@ -385,8 +349,7 @@ int RunSnake::checkSnakePathValid()
         //可以找到尾部
         if(ret)
         {
-            printf("hit 1\n");
-            GridLocation nextMove1 = chooseLongestWay(grid1, newStart, cost_so_far);
+            GridLocation nextMove1 = Util::chooseLongestWay(grid1, newStart, cost_so_far);
             printf("newstart: (%d %d) newgoal: (%d %d)\n", newStart.x, newStart.y, newGoal.x, newGoal.y);
             draw_grid(grid1, 1);
 
@@ -400,8 +363,6 @@ int RunSnake::checkSnakePathValid()
                 printf("after GridLocation nextMove1 = choose_longest_way(grid1, newStart, cost_so_far);\n");
                 reconstruct_path_1(path, newGoal, nextMove1, newStart, came_from);
 
-                printf("hit 2\n");
-
                 //头尾相接
                 if(nextMove1 == newGoal && path.size() > 4)
                 {
@@ -409,7 +370,7 @@ int RunSnake::checkSnakePathValid()
                 }
                 else
                 {
-                    direction = checkDirection(start, nextMove);
+                    direction = Util::checkDirection(start, nextMove);
                 }
             }
 
@@ -440,13 +401,10 @@ int RunSnake::followTail()
     //采用广度优先路径搜索算法，求出从蛇尾到达蛇头的路径，如果成功找到路径，则返回1，否则返回0
     //为什么要反向求路径，因为这样才能找到从蛇头出发的最长路径和最短路径，如果 正向求路径，
     //则蛇头周围的权重都一样，没法区分最长最短。
-    printf("followTail 1\n");
     int ret = breadth_first_search(grid, came_from, cost_so_far, goal, start);
-    printf("followTail 2\n");
     if(ret)
     {
-        printf("followTail 3\n");
-        GridLocation nextMove = chooseLongestWay(grid, start, cost_so_far);
+        GridLocation nextMove = Util::chooseLongestWay(grid, start, cost_so_far);
 
         if(nextMove.x == -1 && nextMove.y == -1)
         {
@@ -456,15 +414,13 @@ int RunSnake::followTail()
         std::vector<GridLocation> path;
         reconstruct_path_1(path, goal, nextMove, start, came_from);
 
-        printf("followTail 4\n");
-
         if(nextMove == goal && path.size() > 4)
         {
             return 0;
         }
         else
         {
-            direction = checkDirection(start, nextMove);
+            direction = Util::checkDirection(start, nextMove);
         }
     }
 
@@ -494,51 +450,9 @@ void RunSnake::AI()
     {
         ret = anyPossibleMove();
     }
+
+    fflush(stdout);
 }
-
-void RunSnake::getPointsNotInSnakeBodyAndFood(deque<GridLocation> &deq1)
-{
-    for(int i=0;i<=x_max;i++)
-    {
-        for(int j=0;j<=y_max;j++)
-        {
-            GridLocation p{i, j};
-
-            //排除掉食物的位置和贪食蛇的身体的位置
-            if(p.x == food.x && p.y == food.y)
-            {
-                continue;
-            }
-            else if(findPointInSnakeBody(p, deq))
-            {
-                continue;
-            }
-            else
-            {
-                deq1.push_back(p);
-            }
-        }
-    }
-}
-
-
-int RunSnake::findPointInSnakeBody(GridLocation p, deque<GridLocation> deq)
-{
-    for(deque<GridLocation>::iterator it=deq.begin();it!=deq.end();++it)
-    {
-        if(p.x == it->x && p.y == it->y)
-        {
-            return 1;
-        }
-        else
-        {
-            continue;
-        }
-    }
-
-    return 0;
-}
-
 
 GridLocation RunSnake::getFoodPosition()
 {
@@ -550,52 +464,3 @@ deque<GridLocation> RunSnake::getSnakePosition()
     return deq;
 }
 
-
-int checkDirection(GridLocation current, GridLocation next)
-{
-    if(next.x - current.x > 0)
-        return RIGHT;
-    else if(next.x - current.x < 0)
-        return LEFT;
-    else if(next.y - current.y > 0)
-        return  DOWN;
-    else if(next.y - current.y < 0)
-        return UP;
-
-    return ERROR;
-}
-
-GridLocation chooseShortestWay(SquareGrid grid, GridLocation snakeHead,
-                        std::unordered_map<GridLocation, double> cost_so_far)
-{
-
-    int min = INT_MAX;
-    GridLocation nextMove{-1, -1};
-    for(GridLocation next: grid.neighbors(snakeHead))
-    {
-        if(cost_so_far.find(next) != cost_so_far.end() && min > cost_so_far[next])
-        {
-            min = static_cast<int>(cost_so_far[next]);
-            nextMove = next;
-        }
-    }
-
-    return nextMove;
-}
-
-GridLocation chooseLongestWay(SquareGrid grid, GridLocation snakeHead,
-                       std::unordered_map<GridLocation, double> cost_so_far)
-{
-    int max = -INT_MAX;
-    GridLocation nextMove{-1, -1};
-    for(GridLocation next: grid.neighbors(snakeHead))
-    {
-        if(cost_so_far.find(next) != cost_so_far.end() && max < cost_so_far[next])
-        {
-            max = static_cast<int>(cost_so_far[next]);
-            nextMove = next;
-        }
-    }
-
-    return nextMove;
-}

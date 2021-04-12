@@ -1,4 +1,4 @@
-#ifndef RUNSNAKE_H
+﻿#ifndef RUNSNAKE_H
 #define RUNSNAKE_H
 #include "implementation.h"
 
@@ -8,20 +8,20 @@ class RunSnake:public QThread
 public:
     RunSnake();
     void run();
+    void setDirection(int dir);
+    GridLocation getFoodPosition();
+    deque<GridLocation> getSnakePosition();
+private:
     void initSnakeAndFood();        //初始化蛇和食物
     void moveSnake();               //移动蛇
     void feedFood();                //喂食物
-    int findPointInSnakeBody(GridLocation p, deque<GridLocation> deq);
-    void getPointsNotInSnakeBodyAndFood(deque<GridLocation> &deq1);
     int detectCollision();     //检测是否发生碰撞
     int checkSnakePathValid();
     int followTail();
     int anyPossibleMove();
     void AI();                  //人工智能，电脑自动玩,采用A*算法
     int getLevel();
-    void setDirection(int dir);
-    GridLocation getFoodPosition();
-    deque<GridLocation> getSnakePosition();
+
     SquareGrid makeDiagram(deque<GridLocation> deq);
     SquareGrid makeDiagram1(deque<GridLocation> deq);
 protected:
@@ -42,11 +42,5 @@ private:
     int x_max;  //the max x position of the snake
     int y_max;  //the max y position of the snake
 };
-
-//初始化随机数种子
-void initRandSeed(void);
-
-//生成随机数
-int randomize(int min, int max);
 
 #endif // RUNSNAKE_H

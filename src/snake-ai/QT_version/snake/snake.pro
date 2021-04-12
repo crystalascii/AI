@@ -19,8 +19,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 # Input
 HEADERS += drawsnake.h mainwindow.h public.h runsnake.h \
-    implementation.h
+    implementation.h \
+    util.h
 FORMS += mainwindow.ui
 SOURCES += drawsnake.cpp main.cpp mainwindow.cpp runsnake.cpp \
-    implementation.cpp
+    implementation.cpp \
+    util.cpp
 QT += core gui widgets

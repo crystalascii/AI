@@ -1,4 +1,4 @@
-#ifndef PUBLIC_H
+﻿#ifndef PUBLIC_H
 #define PUBLIC_H
 
 #include <QWidget>
@@ -49,7 +49,7 @@ typedef enum
 	EASY = 500,
 	MEDIUM = 250,
 	DIFFICULT = 100,
-	VERY_DIFFICULT = 50,
+    VERY_DIFFICULT = 20,
 } GAMELEVEL;
 
 
@@ -60,7 +60,7 @@ typedef enum
 #define SNAKE_WIDTH    40
 #define STANDARD_MARGIN SNAKE_WIDTH
 
-#define STANDARD_WIDTH (GRID_NUM * SNAKE_WIDTH + 3 * STANDARD_MARGIN)
+#define STANDARD_WIDTH (GRID_NUM * SNAKE_WIDTH + 2 * STANDARD_MARGIN)
 #define STANDARD_HEIGHT STANDARD_WIDTH
 
 

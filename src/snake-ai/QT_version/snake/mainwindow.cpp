@@ -1,17 +1,25 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    qDebug() << "before setup window";
     ui->setupUi(this);
+
+    setFixedHeight(STANDARD_HEIGHT);
+    setFixedWidth(STANDARD_WIDTH);
+    qDebug() << "after setup window";
+
     snake = new DrawSnake;
     runSnake = new RunSnake;
     setCentralWidget(snake);
     runSnake->start();
 
     connect(this->runSnake, SIGNAL(update()), this, SLOT(updateSnakeAndFood()));
+
+    qDebug() << "mainwindow inited";
 }
 
 void MainWindow::updateSnakeAndFood()
@@ -24,6 +32,8 @@ void MainWindow::updateSnakeAndFood()
 
 MainWindow::~MainWindow()
 {
+    runSnake->quit();
+
     delete snake;
     delete runSnake;
     delete ui;

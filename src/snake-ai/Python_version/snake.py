@@ -1,4 +1,5 @@
-# coding: utf-8
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 
 import curses
 from curses import KEY_RIGHT, KEY_LEFT, KEY_UP, KEY_DOWN
@@ -191,7 +192,7 @@ def new_food():
         h = randint(1, HEIGHT-2)
         food = h * WIDTH + w
         cell_free = is_cell_free(food, snake_size, snake)
-    win.addch(food/WIDTH, food%WIDTH, '@')
+    win.addch((int)(food/WIDTH), food%WIDTH, '@')
 
 #移动贪食蛇    
 def make_move(pbest_move):
@@ -261,6 +262,7 @@ def find_safe_way():
     return safe_move
 
 
+
 curses.initscr()
 win = curses.newwin(HEIGHT, WIDTH, 0, 0)
 win.keypad(1)
@@ -268,7 +270,7 @@ curses.noecho()
 curses.curs_set(0)
 win.border(0)
 win.nodelay(1)
-win.addch(food/WIDTH, food%WIDTH, '@')
+win.addch((int)(food/WIDTH), food%WIDTH, '@')
 
 while key != 27:
     win.border(0)
